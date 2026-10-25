@@ -8,4 +8,4 @@ management:
         include: health,info,refresh
 
 ticketflow:
-  message: "Bienvenue dans TicketFlow - configuration v3"
+  message: "Tester le rafraichissement de configuration"
