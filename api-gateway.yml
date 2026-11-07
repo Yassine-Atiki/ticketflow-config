@@ -1,34 +1,41 @@
-  server:
-    port: 8080
+server:
+  port: 8080
 
-  spring:
-    cloud:
-      gateway:
-        server:
-          webflux:
-            discovery:
-              locator:
-                enabled: false
-            routes:
-              - id: customer-service
-                uri: lb://customer-service
-                predicates:
-                  - Path=/api/customers/**
-                filters:
-                  - AddResponseHeader=X-Served-By, api-gateway
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+          routes:
+            - id: customer-service
+              uri: lb://customer-service
+              predicates:
+                - Path=/api/customers/**
+              filters:
+                - AddResponseHeader=X-Served-By, api-gateway
 
-              - id: payment-service
-                uri: lb://payment-service
-                predicates:
-                  - Path=/api/payments/**
-                filters:
-                  - AddResponseHeader=X-Served-By, api-gateway
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/payments/**
+              filters:
+                - AddResponseHeader=X-Served-By, api-gateway
 
-  management:
-    endpoint:
-      gateway:
-        access: read-only
-    endpoints:
-      web:
-        exposure:
-          include: health,info,gateway
+            - id: ticket-service
+              uri: lb://ticket-service
+              predicates:
+                - Path=/api/tickets/**
+              filters:
+                - AddResponseHeader=X-Served-By, api-gateway
+
+management:
+  endpoint:
+    gateway:
+      access: read-only
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
