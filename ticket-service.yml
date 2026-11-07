@@ -1,0 +1,24 @@
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: ticket-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/ticket_db
+    username: ticket_user
+    password: ticket_dev
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
