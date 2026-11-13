@@ -1,0 +1,63 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5433/booking_db
+    username: ${BOOKING_DB_USER}
+    password: ${BOOKING_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: booking-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.ticketflow.*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    url: /openapi.yml
+  api-docs:
+    enabled: true
+
+booking:
+  hold-duration: PT15M
+  max-quantity-per-order: 10
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      event-service:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+      customer-service:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+  timelimiter:
+    instances:
+      event-service:
+        timeout-duration: 3s
+      customer-service:
+        timeout-duration: 3s
+  retry:
+    instances:
+      event-service:
+        max-attempts: 3
+        wait-duration: 500ms
+      customer-service:
+        max-attempts: 3
+        wait-duration: 500ms
